@@ -9,7 +9,7 @@ on:
 name: Build
 
 jobs:
-  windows:
+  Build:
     runs-on: windows-latest
     steps:
       - run: git config --global core.autocrlf false
