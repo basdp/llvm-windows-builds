@@ -21,8 +21,6 @@ jobs:
           TAG: ${{ inputs.tag }}
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          mkdir llvm
-          cd llvm
 
           git clone --config core.autocrlf=false --depth 1 --branch %TAG% https://github.com/llvm/llvm-project.git
 
@@ -34,9 +32,22 @@ jobs:
 
           if not exist ..\package mkdir ..\package
           cmake --build . --target install --config Release
+      
+      - name: Archive
+        env:
+          TAG: ${{ inputs.tag }}
+        run: 7z a -tzip %TAG%-dev-win64.zip ./package/
 
-      - uses: actions/upload-artifact@v3
+#       - uses: actions/upload-artifact@v3
+#         with:
+#           name: ${{ inputs.tag }}-dev-win64
+#           path: archive/
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          name: ${{ inputs.tag }}-dev-win64
-          path: archive/
+            files: %TAG%-dev-win64.zip
+
 
