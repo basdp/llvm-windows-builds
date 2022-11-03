@@ -24,7 +24,7 @@ jobs:
           mkdir llvm
           cd llvm
 
-          git clone --config core.autocrlf=false --depth 1 --branch <tag_name> https://github.com/llvm/llvm-project.git
+          git clone --config core.autocrlf=false --depth 1 --branch %TAG% https://github.com/llvm/llvm-project.git
 
           mkdir build
           cd build
