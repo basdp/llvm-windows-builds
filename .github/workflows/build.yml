@@ -22,15 +22,15 @@ jobs:
           mkdir build
           cd build
 
-          cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%cd%\..\package" ../llvm-project/llvm
+          cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%cd%\..\llvm-build" ../llvm-project/llvm
           cmake --build . --config Release
 
-          if not exist ..\package mkdir ..\package
+          if not exist ..\llvm-build mkdir ..\llvm-build
           cmake --build . --target install --config Release
       
       - name: Archive
         shell: cmd
-        run: 7z a -tzip %GITHUB_REF_NAME%-dev-win64.zip ./package/
+        run: 7z a -tzip %GITHUB_REF_NAME%-dev-win64.zip ./llvm-build/
 
 #       - uses: actions/upload-artifact@v3
 #         with:
