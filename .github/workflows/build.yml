@@ -1,10 +1,7 @@
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'LLVM Repo Tag'
-        required: true
-        type: string
+  push:
+    tags:
+      - "*"
 
 name: Build
 
@@ -18,7 +15,7 @@ jobs:
       - name: Build
         shell: cmd
         env:
-          TAG: ${{ inputs.tag }}
+          TAG: $GITHUB_REF_NAME
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 
@@ -34,20 +31,22 @@ jobs:
           cmake --build . --target install --config Release
       
       - name: Archive
+        shell: cmd
         env:
-          TAG: ${{ inputs.tag }}
+          TAG: $GITHUB_REF_NAME
         run: 7z a -tzip %TAG%-dev-win64.zip ./package/
 
 #       - uses: actions/upload-artifact@v3
 #         with:
 #           name: ${{ inputs.tag }}-dev-win64
 #           path: archive/
-          
+ 
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          TAG: $GITHUB_REF_NAME
         with:
-          files: ${{ inputs.tag }}-dev-win64.zip
+          files: $GITHUB_REF_NAME-dev-win64.zip
 
 
