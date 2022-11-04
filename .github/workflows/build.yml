@@ -14,12 +14,10 @@ jobs:
 
       - name: Build
         shell: cmd
-        env:
-          TAG: $GITHUB_REF_NAME
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 
-          git clone --config core.autocrlf=false --depth 1 --branch %TAG% https://github.com/llvm/llvm-project.git
+          git clone --config core.autocrlf=false --depth 1 --branch %GITHUB_REF_NAME% https://github.com/llvm/llvm-project.git
 
           mkdir build
           cd build
@@ -32,9 +30,7 @@ jobs:
       
       - name: Archive
         shell: cmd
-        env:
-          TAG: $GITHUB_REF_NAME
-        run: 7z a -tzip %TAG%-dev-win64.zip ./package/
+        run: 7z a -tzip %GITHUB_REF_NAME%-dev-win64.zip ./package/
 
 #       - uses: actions/upload-artifact@v3
 #         with:
@@ -45,8 +41,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          TAG: $GITHUB_REF_NAME
         with:
-          files: $GITHUB_REF_NAME-dev-win64.zip
+          files: ${{ github.ref_name }}-dev-win64.zip
 
 
